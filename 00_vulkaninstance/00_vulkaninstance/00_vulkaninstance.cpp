@@ -8,8 +8,16 @@
 static int validation_error = 0;
 #define APP_SHORT_NAME "vulkaninstance"
 
+#ifndef NDEBUG
+#define VERIFY(x) assert(x)
+#else
+#define VERIFY(x) ((void)(x))
+#endif
+
+
 class MyVulkan {
     vk::Instance inst;
+    vk::DebugUtilsMessengerEXT debug_messenger;
 public:
     void init_vk() {
         // todo: validation layers
@@ -48,6 +56,26 @@ public:
             .setPEnabledLayerNames(enabled_layers)
             .setPEnabledExtensionNames(enabled_instance_extensions);
         this->inst = vk::createInstance(inst_info);
+
+        // I get a link error if I try to call this directly. apparently it has to be loaded during runtime?
+        auto vkCreateDebugUtilsMessengerEXT = reinterpret_cast<PFN_vkCreateDebugUtilsMessengerEXT>(vkGetInstanceProcAddr(this->inst, "vkCreateDebugUtilsMessengerEXT"));
+        VkDebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCI{};
+        debugUtilsMessengerCI.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+        debugUtilsMessengerCI.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+        debugUtilsMessengerCI.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+        debugUtilsMessengerCI.pfnUserCallback = debug_messenger_callback;
+        VkDebugUtilsMessengerEXT debugUtilsMessenger;
+        VkResult result = vkCreateDebugUtilsMessengerEXT(this->inst, &debugUtilsMessengerCI, nullptr, &debugUtilsMessenger);
+        assert(result == VK_SUCCESS);
+
+        auto physical_devices = inst.enumeratePhysicalDevices();
+        int gpu_number = 0; // fuck it, first gpu
+        auto gpu = physical_devices[gpu_number]; 
+        {
+            auto physicalDeviceProperties = gpu.getProperties();
+            fprintf(stderr, "Selected GPU %d: %s, type: %s\n", gpu_number, physicalDeviceProperties.deviceName.data(),
+                to_string(physicalDeviceProperties.deviceType).c_str());
+        }
     }
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debug_messenger_callback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
