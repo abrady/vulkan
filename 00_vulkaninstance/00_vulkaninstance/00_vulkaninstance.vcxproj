@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\abrady\vulkan\glfw\include;C:\Users\abrady\vulkan\glm;%VK_SDK_PATH%\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\abrady\vulkan\glfw\include;C:\Users\abrady\vulkan\glm;C:\Users\abrady\Documents\GitHub\stb;C:\Users\abrady\Documents\GitHub\tinyobjloader;%VK_SDK_PATH%\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -148,6 +148,10 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">glslc triangle.vert -o shaders\vert.spv</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">shaders\vert.spv</Outputs>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="code27_shader_depth.frag" />
+    <None Include="code27_shader_depth.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

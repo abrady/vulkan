@@ -27,4 +27,12 @@
       <Filter>Source Files</Filter>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="code27_shader_depth.frag">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="code27_shader_depth.vert">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
